@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "authentication", "authentication\authentication.csproj", "{9FBB3EE6-4003-4D3B-A225-980A72E81B3E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9FBB3EE6-4003-4D3B-A225-980A72E81B3E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FBB3EE6-4003-4D3B-A225-980A72E81B3E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FBB3EE6-4003-4D3B-A225-980A72E81B3E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FBB3EE6-4003-4D3B-A225-980A72E81B3E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E4DD548-687A-4941-B4CE-D47C391E6732}
+	EndGlobalSection
+EndGlobal
