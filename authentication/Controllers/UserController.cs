@@ -24,7 +24,7 @@ namespace authentication.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginInputDTO loginDTO)
+        public async Task<ActionResult> Login(LoginInputDTO loginDTO)
         {
             var response = await _userService.LoginAsync(loginDTO);
             return Ok(response);
