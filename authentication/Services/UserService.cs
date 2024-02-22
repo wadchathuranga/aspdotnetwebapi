@@ -3,6 +3,7 @@ using authentication.DTOs;
 using authentication.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using System.IdentityModel.Tokens.Jwt;
@@ -16,46 +17,53 @@ namespace authentication.Services
         private readonly AppDbContext _db;
         private readonly IConfiguration _config;
 
-        public static User user = new User();
-
         public UserService(AppDbContext db, IConfiguration configuration)
         {
             _db = db;
             _config = configuration;
         }
 
-        public async Task<User> CreateUserAsync(UserInputDTO userDTO)
+        public async Task<List<User>> CreateUserAsync(UserInputDTO userDTO)
         {
-            string passwordHash
-                = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
+            
+            var user = new User()
+            {
+                Username = string.Empty,
+                Email = string.Empty,
+                Password = string.Empty,
+            };
 
-            user.username = userDTO.Username;
-            user.password = passwordHash;
-            user.email = userDTO.Email;
+            string passwordHash = BCrypt.Net.BCrypt.HashPassword(userDTO.Password);
 
+            user.Username = userDTO.Username;
+            user.Email = userDTO.Email;
+            user.Password = passwordHash;
+
+            _db.Users.Add(user);
             _db.SaveChanges();
 
-            return user;
+            return await _db.Users.ToListAsync();
         }
 
-        public async Task<string> LoginAsync(LoginInputDTO loginDTO)
+        public async Task<User> LoginAsync(LoginInputDTO loginDTO)
         {
-            if (loginDTO.Email is null) return "Email is required!";
+            if (loginDTO.Email is null) throw new Exception("Email is required!");
 
             if (loginDTO == null)
-                return "Login credential required!";
+                throw new Exception("Login credential required!");
 
-            var getUser = await _db.Users.FindAsync(loginDTO.Email);
+            var getUser = await _db.Users.FirstOrDefaultAsync(u => u.Email == loginDTO.Email);
+
             if (getUser is null)
-                return "User not found";
+                throw new Exception("User not found");
 
-            bool verifyPasswords = BCrypt.Net.BCrypt.Verify(loginDTO.Password, getUser.password);
+            bool verifyPasswords = BCrypt.Net.BCrypt.Verify(loginDTO.Password, getUser.Password);
             if (!verifyPasswords)
-                return "Invalid email/password";
+                throw new Exception("Invalid email/password");
 
             //string token = GenerateToken(userSession);
 
-            return "Login Success";
+            return getUser;
         }
 
         //private string GenerateToken(UserSession user)

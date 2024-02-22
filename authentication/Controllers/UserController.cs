@@ -17,7 +17,7 @@ namespace authentication.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(UserInputDTO userDTO)
+        public async Task<ActionResult<List<User>>> Register(UserInputDTO userDTO)
         {
             var response = await _userService.CreateUserAsync(userDTO);
             return Ok(response);

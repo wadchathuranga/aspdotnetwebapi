@@ -4,23 +4,22 @@ namespace authentication.DTOs
 {
     public class UserInputDTO
     {
-        public string? Id { get; set; } = string.Empty;
+        public string? Id { get; set; }
 
         [Required]
-        public string Username { get; set; } = string.Empty;
-
+        public string Username { get; set; }
         [Required]
         [EmailAddress]
         [DataType(DataType.EmailAddress)]
-        public string Email { get; set; } = string.Empty;
+        public string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        public string Password { get; set; } = string.Empty;
+        public string Password { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
         [Compare(nameof(Password))]
-        public string ConfirmPassword { get; set; } = string.Empty;
+        public string ConfirmPassword { get; set; }
     }
 }

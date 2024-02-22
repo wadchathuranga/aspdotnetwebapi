@@ -6,8 +6,8 @@ namespace authentication.Services
 {
     public interface IUserService
     {
-        Task<User> CreateUserAsync(UserInputDTO userDTO);
+        Task<List<User>> CreateUserAsync(UserInputDTO userDTO);
 
-        Task<string> LoginAsync(LoginInputDTO loginDTO);
+        Task<User> LoginAsync(LoginInputDTO loginDTO);
     }
 }

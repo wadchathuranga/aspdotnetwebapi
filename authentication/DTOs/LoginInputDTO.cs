@@ -7,10 +7,10 @@ namespace authentication.DTOs
         [Required]
         [EmailAddress]
         [DataType(DataType.EmailAddress)]
-        public string Email { get; set; } = string.Empty;
+        public required string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        public string Password { get; set; } = string.Empty;
+        public required string Password { get; set; }
     }
 }
