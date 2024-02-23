@@ -1,9 +1,10 @@
 ﻿using authentication.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace authentication.DbConnections
 {
-    public class AppDbContext: DbContext
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
         private readonly IConfiguration _config;
 
