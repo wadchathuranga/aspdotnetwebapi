@@ -8,6 +8,7 @@ namespace authentication.DTOs
 
         [Required]
         public string Username { get; set; }
+        
         [Required]
         [EmailAddress]
         [DataType(DataType.EmailAddress)]
