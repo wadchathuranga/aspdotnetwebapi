@@ -33,7 +33,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
-//app.UseAuthentication();
 
 //Enable CORS
 //app.UseCors(c => c.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
@@ -47,6 +46,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+//app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
