@@ -4,6 +4,7 @@ using authentication.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using System.IdentityModel.Tokens.Jwt;
@@ -23,7 +24,8 @@ namespace authentication.Services
             _config = configuration;
         }
 
-        public async Task<List<User>> CreateUserAsync(UserInputDTO userDTO)
+        // Create user
+        public async Task<List<User>> CreateUser(UserInputDTO userDTO)
         {
             
             var user = new User()
@@ -45,7 +47,53 @@ namespace authentication.Services
             return await _db.Users.ToListAsync();
         }
 
-        public async Task<User> LoginAsync(LoginInputDTO loginDTO)
+        // Get single user by Id
+        public async Task<User?> GetSingleUserById(int id)
+        {
+            var user = await _db.Users.FindAsync(id);
+            if (user is null)
+                return null;
+
+            return user;
+        }
+
+        // Update user by Id
+        public async Task<List<User>?> UpdateUser(int id, UserUpdateDTO userUpdateDTO)
+        {
+            var existingUser = await _db.Users.FindAsync(id);
+            if (existingUser is null)
+                return null;
+
+            existingUser.Username = userUpdateDTO.Username == string.Empty ? existingUser.Username : userUpdateDTO.Username;
+            existingUser.Email = userUpdateDTO.Email == string.Empty ? existingUser.Email : userUpdateDTO.Email;
+
+            await _db.SaveChangesAsync();
+
+            return await _db.Users.ToListAsync();
+        }
+
+        // Delete user by Id
+        public async Task<User?> DeleteUserById(int id)
+        {
+            var user = await _db.Users.FindAsync(id);
+            if (user is null)
+                return null;
+
+            _db.Users.Remove(user);
+            await _db.SaveChangesAsync();
+
+            return user;
+        }
+
+        // Get all users
+        public async Task<List<User>?> GetAllUsers()
+        {
+            var users = await _db.Users.ToListAsync();
+            return users;
+        }
+
+        // User login
+        public async Task<string> Login(LoginInputDTO loginDTO)
         {
             if (loginDTO.Email is null) throw new Exception("Email is required!");
 
@@ -61,30 +109,53 @@ namespace authentication.Services
             if (!verifyPasswords)
                 throw new Exception("Invalid email/password");
 
-            //string token = GenerateToken(userSession);
+            string token = GenerateToken(getUser);
 
-            return getUser;
+            Console.WriteLine("###########: ", token);
+
+            return token;
         }
 
-        //private string GenerateToken(UserSession user)
-        //{
-        //    var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
-        //    var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-        //    var userClaims = new[]
-        //    {
-        //        new Claim(ClaimTypes.NameIdentifier, user.Id),
-        //        new Claim(ClaimTypes.Name, user.Name),
-        //        new Claim(ClaimTypes.Email, user.Email),
-        //        new Claim(ClaimTypes.Role, user.Role)
-        //    };
-        //    var token = new JwtSecurityToken(
-        //        issuer: _config["Jwt:Issuer"],
-        //        audience: _config["Jwt:Audience"],
-        //        claims: userClaims,
-        //        expires: DateTime.Now.AddDays(1),
-        //        signingCredentials: credentials
-        //        );
-        //    return new JwtSecurityTokenHandler().WriteToken(token);
-        //}
+        // Generate access token
+        private string GenerateToken(User user)
+        {
+            //var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+            //var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            //var tokenHandler = new JwtSecurityTokenHandler();
+            //var key = Encoding.UTF8.GetBytes(_config["Jwt:Key"]!);
+            //var tokenDescriptor = new SecurityTokenDescriptor
+            //{
+            //    Subject = new ClaimsIdentity(
+            //        new Claim[] {
+            //            new Claim(ClaimTypes.Name, user.Username)
+            //        }
+            //    ),
+            //    Expires = DateTime.UtcNow.AddHours(1),
+            //    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256)
+            //};
+            //var token = tokenHandler.CreateToken(tokenDescriptor);
+            //return tokenHandler.WriteToken(token);
+
+            List<Claim> claims = new List<Claim> {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, "Admin"),
+                new Claim(ClaimTypes.Role, "User"),
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                _config["Jwt:Key"]!));
+
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
+
+            var token = new JwtSecurityToken(
+                    claims: claims,
+                    expires: DateTime.Now.AddDays(1),
+                    signingCredentials: creds
+                );
+
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
+        }
     }
 }
