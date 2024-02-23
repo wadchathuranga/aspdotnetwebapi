@@ -1,8 +1,5 @@
 using authentication.DbConnections;
 using authentication.Services;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 

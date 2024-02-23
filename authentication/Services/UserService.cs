@@ -1,12 +1,8 @@
 ﻿using authentication.DbConnections;
 using authentication.DTOs;
 using authentication.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Any;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;

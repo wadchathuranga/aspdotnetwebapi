@@ -1,6 +1,5 @@
 ﻿using authentication.DTOs;
 using authentication.Models;
-using Microsoft.OpenApi.Any;
 
 namespace authentication.Services
 {

@@ -1,7 +1,6 @@
 ﻿using authentication.DTOs;
 using authentication.Models;
 using authentication.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace authentication.Controllers
@@ -48,6 +47,7 @@ namespace authentication.Controllers
         public async Task<ActionResult<User?>> GetSingleUserById(int id)
         {
             var response = await _userService.GetSingleUserById(id);
+            if(response is null) return NotFound("User Not Found!");
             return Ok(response);
         }
 
