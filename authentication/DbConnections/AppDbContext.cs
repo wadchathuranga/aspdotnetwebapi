@@ -1,9 +1,10 @@
 ﻿using authentication.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace authentication.DbConnections
 {
-    public class AppDbContext: DbContext
+    public class AppDbContext : IdentityDbContext
     {
         private readonly IConfiguration _config;
 
@@ -18,6 +19,6 @@ namespace authentication.DbConnections
             optionsBuilder.UseSqlServer(_config.GetConnectionString("DefaultConnection"));
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     }
 }

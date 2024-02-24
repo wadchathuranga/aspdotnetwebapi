@@ -1,34 +1,57 @@
+using authentication.Configurations;
 using authentication.DbConnections;
 using authentication.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// --------------- JwtConfig ---------------
+builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IUserService, UserService>();
+// --------------- Define repository interfaces ---------------
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
-// Register database
+// --------------- Add identity ---------------
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+    options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<AppDbContext>();
+
+// --------------- Add Athentication ---------------
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(jwt => {
+        var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value!);
+        jwt.SaveToken = true;
+        jwt.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            RequireExpirationTime = false,
+            ValidateLifetime = false,
+        };
+    });
+
+// --------------- Add Authorization builder
+
+
+// --------------- Register database ---------------
 builder.Services.AddDbContext<AppDbContext>();
 
-//builder.Services.AddAuthentication().AddJwtBearer(options =>
-//{
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuerSigningKey = true,
-//        ValidateAudience = false,
-//        ValidateIssuer = false,
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-//                builder.Configuration.GetSection("AppSettings:Token").Value!))
-//    };
-//});
-
 var app = builder.Build();
-
 
 //Enable CORS
 //app.UseCors(c => c.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
@@ -42,7 +65,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//app.UseAuthentication();
+// --------------- Add Athentication ---------------
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 // Middleware define bellow

@@ -2,15 +2,17 @@
 
 namespace authentication.DTOs
 {
-    public class LoginInputDTO
+    public class EmployeeCreateDTO
     {
+        [Required]
+        public string EmpName { get; set; }
+        
         [Required]
         [EmailAddress]
         [DataType(DataType.EmailAddress)]
-        public required string Email { get; set; }
+        public string EmpEmail { get; set; }
 
         [Required]
-        [DataType(DataType.Password)]
-        public required string Password { get; set; }
+        public string EmpAddress { get; set; }
     }
 }
