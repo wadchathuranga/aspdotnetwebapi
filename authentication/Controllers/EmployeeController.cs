@@ -22,13 +22,6 @@ namespace authentication.Controllers
             return Ok(response);
         }
 
-        //[HttpPost("login")]
-        //public async Task<ActionResult> Login(LoginDTO loginDTO)
-        //{
-        //    var response = await _employeeService.Login(loginDTO);
-        //    return Ok(response);
-        //}
-
         [HttpGet]
         public async Task<ActionResult<Employee?>> GetAllEmployees()
         {
@@ -36,18 +29,18 @@ namespace authentication.Controllers
             return Ok(response);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Employee?>> UpdateEmployee(int id, EmployeeUpdateDTO employeeUpdateDTO)
-        {
-            var response = await _employeeService.UpdateEmployee(id, employeeUpdateDTO);
-            return Ok(response);
-        }
-
         [HttpGet("{id}")]
         public async Task<ActionResult<Employee?>> GetSingleEmployeeById(int id)
         {
             var response = await _employeeService.GetSingleEmployeeById(id);
-            if(response is null) return NotFound("User Not Found!");
+            if (response is null) return NotFound("User Not Found!");
+            return Ok(response);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Employee?>> UpdateEmployee(int id, EmployeeUpdateDTO employeeUpdateDTO)
+        {
+            var response = await _employeeService.UpdateEmployee(id, employeeUpdateDTO);
             return Ok(response);
         }
 

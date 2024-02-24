@@ -7,8 +7,6 @@ namespace authentication.Services
     {
         Task<List<Employee>> CreateEmployee(EmployeeCreateDTO employeeCreateDTO);
 
-        //Task<string> Login(LoginDTO loginDTO);
-
         Task<List<Employee>?> UpdateEmployee(int id, EmployeeUpdateDTO employeeUpdateDTO);
 
         Task<Employee?> GetSingleEmployeeById(int id);
