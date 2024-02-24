@@ -1,5 +1,7 @@
 using authentication.DbConnections;
+using authentication.Models;
 using authentication.Services;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,24 +12,26 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Define repository interfaces
 builder.Services.AddScoped<IUserService, UserService>();
+
+// Add Athentication
+builder.Services.AddAuthentication().AddBearerToken(IdentityConstants.BearerSchema);
+
+// Add Authorization
+builder.Services.AddAuthorizationBuilder();
 
 // Register database
 builder.Services.AddDbContext<AppDbContext>();
 
-//builder.Services.AddAuthentication().AddJwtBearer(options =>
-//{
-//    options.TokenValidationParameters = new TokenValidationParameters
-//    {
-//        ValidateIssuerSigningKey = true,
-//        ValidateAudience = false,
-//        ValidateIssuer = false,
-//        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
-//                builder.Configuration.GetSection("AppSettings:Token").Value!))
-//    };
-//});
+builder.Services.AddIdentityCore<AppUser>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddApiEndpoints();
 
 var app = builder.Build();
+
+
+app.MapIdentityApi<AppUser>();
 
 
 //Enable CORS
