@@ -12,7 +12,7 @@ using authentication.DbConnections;
 namespace authentication.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240224054637_initial-migration")]
+    [Migration("20240224082449_initial-migration")]
     partial class initialmigration
     {
         /// <inheritdoc />
@@ -170,10 +170,12 @@ namespace authentication.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -210,10 +212,12 @@ namespace authentication.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -223,7 +227,7 @@ namespace authentication.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("authentication.Models.User", b =>
+            modelBuilder.Entity("authentication.Models.Employee", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -231,21 +235,21 @@ namespace authentication.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
 
-                    b.Property<string>("Email")
+                    b.Property<string>("EmpAddress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Password")
+                    b.Property<string>("EmpEmail")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Username")
+                    b.Property<string>("EmpName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Employees");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

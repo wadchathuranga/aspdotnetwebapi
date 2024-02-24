@@ -1,6 +1,6 @@
 ﻿namespace authentication.DTOs.Response
 {
-    public class LoginResDTO : AuthRes
+    public class RegisterRes : AuthResDTO
     {
     }
 }

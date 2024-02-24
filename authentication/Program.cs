@@ -8,7 +8,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// JwtConfig
+// --------------- JwtConfig ---------------
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 
 builder.Services.AddControllers();
@@ -16,15 +16,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Define repository interfaces
-builder.Services.AddScoped<IUserService, UserService>();
+// --------------- Define repository interfaces ---------------
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
-// Add identity
+// --------------- Add identity ---------------
 builder.Services.AddDefaultIdentity<IdentityUser>(options =>
     options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<AppDbContext>();
 
-// Add Athentication
+// --------------- Add Athentication ---------------
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -48,15 +48,10 @@ builder.Services.AddAuthentication(options =>
 // Add Authorization
 //builder.Services.AddAuthorizationBuilder();
 
-// Register database
+// --------------- Register database ---------------
 builder.Services.AddDbContext<AppDbContext>();
 
-
-
 var app = builder.Build();
-
-
-
 
 //Enable CORS
 //app.UseCors(c => c.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
@@ -70,7 +65,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// Add Athentication
+// --------------- Add Athentication ---------------
 app.UseAuthentication();
 
 app.UseAuthorization();

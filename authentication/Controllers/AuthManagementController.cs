@@ -58,7 +58,7 @@ namespace authentication.Controllers
                     var token = GenerateJwtToken(newUser);
 
                     // set response to return
-                    var response = new RegisterResDTO()
+                    var response = new RegisterRes()
                     {
                         Result = true,
                         Token = token,

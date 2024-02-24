@@ -19,6 +19,6 @@ namespace authentication.DbConnections
             optionsBuilder.UseSqlServer(_config.GetConnectionString("DefaultConnection"));
         }
 
-        public DbSet<User> Users { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     }
 }

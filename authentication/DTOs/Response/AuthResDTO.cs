@@ -1,6 +1,6 @@
 ﻿namespace authentication.DTOs.Response
 {
-    public class AuthRes
+    public class AuthResDTO
     {
         public string? Token { get; set; } = string.Empty;
 
