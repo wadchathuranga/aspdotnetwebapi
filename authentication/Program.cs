@@ -4,6 +4,7 @@ using authentication.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,7 +15,36 @@ builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfi
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// --------------- Update Swagger to add authorization token ---------------
+
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "Athentication Web API", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Description = "Please enter a valid token",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.Http,
+        Scheme = "Bearer",
+        BearerFormat = "JWT"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 
 // --------------- Define repository interfaces ---------------
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
@@ -44,9 +74,6 @@ builder.Services.AddAuthentication(options =>
             ValidateLifetime = false,
         };
     });
-
-// --------------- Add Authorization builder
-
 
 // --------------- Register database ---------------
 builder.Services.AddDbContext<AppDbContext>();
