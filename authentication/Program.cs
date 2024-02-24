@@ -38,15 +38,15 @@ builder.Services.AddAuthentication(options =>
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(key),
-            ValidateIssuer = true,
+            ValidateIssuer = false,
             ValidateAudience = false,
             RequireExpirationTime = false,
             ValidateLifetime = false,
         };
     });
 
-// Add Authorization
-//builder.Services.AddAuthorizationBuilder();
+// --------------- Add Authorization builder
+
 
 // --------------- Register database ---------------
 builder.Services.AddDbContext<AppDbContext>();

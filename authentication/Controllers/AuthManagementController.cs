@@ -62,13 +62,44 @@ namespace authentication.Controllers
                     {
                         Result = true,
                         Token = token,
-
                     };
 
                     return Ok(response);
                 }
 
                 return BadRequest(isCreated.Errors.Select(e=>e.Description).ToList());
+            }
+
+            return BadRequest("Invalid Request Payload!");
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] UserLoginReqDTO loginReqDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                // find the user is existing or not
+                var existingUser = await _userManager.FindByEmailAsync(loginReqDTO.Email);
+                if (existingUser == null) return BadRequest("Invalid Credentials!");
+
+                // check password is valid or not
+                var isPasswordValid = await _userManager.CheckPasswordAsync(existingUser, loginReqDTO.Password);
+                if (isPasswordValid)
+                {
+                    // generate jwt token
+                    var token = GenerateJwtToken(existingUser);
+
+                    // set response to return
+                    var response = new LoginRes()
+                    {
+                        Result = true,
+                        Token = token,
+                    };
+
+                    return Ok(response);
+                }
+
+                return BadRequest("Invalid Credentials!");
             }
 
             return BadRequest("Invalid Request Payload!");
