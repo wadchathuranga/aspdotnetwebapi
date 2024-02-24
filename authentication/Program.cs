@@ -17,7 +17,6 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 // --------------- Update Swagger to add authorization token ---------------
-
 builder.Services.AddSwaggerGen(option =>
 {
     option.SwaggerDoc("v1", new OpenApiInfo { Title = "Athentication Web API", Version = "v1" });
@@ -38,7 +37,7 @@ builder.Services.AddSwaggerGen(option =>
                 Reference = new OpenApiReference
                 {
                     Type=ReferenceType.SecurityScheme,
-                    Id="Bearer"
+                    Id=JwtBearerDefaults.AuthenticationScheme
                 }
             },
             new string[]{}
