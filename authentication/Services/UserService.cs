@@ -21,7 +21,7 @@ namespace authentication.Services
         }
 
         // Create user
-        public async Task<List<User>> CreateUser(UserInputDTO userDTO)
+        public async Task<List<User>> CreateUser(UserDTO userDTO)
         {
             
             var user = new User()
@@ -89,7 +89,7 @@ namespace authentication.Services
         }
 
         // User login
-        public async Task<string> Login(LoginInputDTO loginDTO)
+        public async Task<string> Login(LoginDTO loginDTO)
         {
             if (loginDTO.Email is null) throw new Exception("Email is required!");
 

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "uXXpQeEmDbmTzsGCsJRmlINsSn+fWPSRQQjym6oaONvZJZMlTx1FDMC2/su/qBk33eNhz/hn/ua05O4si3dlaA==",
+  "dgSpecHash": "h424xaLdpMkGPrkj6ZbloyhaXQUk1bDdaAsCgYMbt7bDLKnk7R3zvmqyAoiq0th6FVxcbamSTVk7Sp3ge/VuTw==",
   "success": true,
   "projectFilePath": "C:\\Users\\wadil\\source\\repos\\aspdotnetwebapi\\authentication\\authentication.csproj",
   "expectedPackageFiles": [
@@ -27,7 +27,6 @@
     "C:\\Users\\wadil\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\wadil\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\7.0.0\\microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\wadil\\.nuget\\packages\\microsoft.extensions.caching.memory\\7.0.0\\microsoft.extensions.caching.memory.7.0.0.nupkg.sha512",
-    "C:\\Users\\wadil\\.nuget\\packages\\microsoft.extensions.configuration\\7.0.0\\microsoft.extensions.configuration.7.0.0.nupkg.sha512",
     "C:\\Users\\wadil\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\7.0.0\\microsoft.extensions.configuration.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\wadil\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\7.0.0\\microsoft.extensions.dependencyinjection.7.0.0.nupkg.sha512",
     "C:\\Users\\wadil\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\7.0.0\\microsoft.extensions.dependencyinjection.abstractions.7.0.0.nupkg.sha512",

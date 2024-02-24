@@ -16,14 +16,14 @@ namespace authentication.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<List<User?>>> Register(UserInputDTO userDTO)
+        public async Task<ActionResult<List<User?>>> Register(UserDTO userDTO)
         {
             var response = await _userService.CreateUser(userDTO);
             return Ok(response);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login(LoginInputDTO loginDTO)
+        public async Task<ActionResult> Login(LoginDTO loginDTO)
         {
             var response = await _userService.Login(loginDTO);
             return Ok(response);

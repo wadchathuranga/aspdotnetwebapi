@@ -5,9 +5,9 @@ namespace authentication.Services
 {
     public interface IUserService
     {
-        Task<List<User>> CreateUser(UserInputDTO userDTO);
+        Task<List<User>> CreateUser(UserDTO userDTO);
 
-        Task<string> Login(LoginInputDTO loginDTO);
+        Task<string> Login(LoginDTO loginDTO);
 
         Task<List<User>?> UpdateUser(int id, UserUpdateDTO userUpdateDTO);
 

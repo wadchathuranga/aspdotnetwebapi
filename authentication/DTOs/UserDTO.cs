@@ -2,7 +2,7 @@
 
 namespace authentication.DTOs
 {
-    public class UserInputDTO
+    public class UserDTO
     {
         public string? Id { get; set; }
 

@@ -2,7 +2,7 @@
 
 namespace authentication.DTOs
 {
-    public class LoginInputDTO
+    public class LoginDTO
     {
         [Required]
         [EmailAddress]
