@@ -1,6 +1,6 @@
 ﻿namespace authentication.Configurations
 {
-    public class JwtSecret
+    public class JwtConfig
     {
         public string Secret { get; set; } = string.Empty;
     }

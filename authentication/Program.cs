@@ -1,13 +1,15 @@
 using authentication.Configurations;
 using authentication.DbConnections;
-using authentication.Models;
 using authentication.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // JwtConfig
-builder.Services.Configure<JwtSecret>(builder.Configuration.GetSection("JwtConfig"));
+builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -17,8 +19,31 @@ builder.Services.AddSwaggerGen();
 // Define repository interfaces
 builder.Services.AddScoped<IUserService, UserService>();
 
+// Add identity
+builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+    options.SignIn.RequireConfirmedAccount = true)
+    .AddEntityFrameworkStores<AppDbContext>();
+
 // Add Athentication
-builder.Services.AddAuthentication().AddJwtBearer();
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(jwt => {
+        var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value!);
+        jwt.SaveToken = true;
+        jwt.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = true,
+            ValidateAudience = false,
+            RequireExpirationTime = false,
+            ValidateLifetime = false,
+        };
+    });
 
 // Add Authorization
 //builder.Services.AddAuthorizationBuilder();
@@ -45,7 +70,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//app.UseAuthentication();
+// Add Athentication
+app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
