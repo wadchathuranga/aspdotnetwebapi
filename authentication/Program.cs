@@ -45,6 +45,8 @@ app.UseHttpsRedirection();
 //app.UseAuthentication();
 app.UseAuthorization();
 
+// Middleware define bellow
+
 app.MapControllers();
 
 app.Run();
