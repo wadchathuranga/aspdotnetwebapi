@@ -64,9 +64,31 @@ namespace authentication.Services
 
 
         // OWNER access is given to the User
-        public Task MakeOwnerAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO)
+        public async Task<CommonResponseHandler> MakeOwnerAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO)
         {
-            throw new NotImplementedException();
+            var response = new CommonResponseHandler();
+
+            var isUserExists = await _userManager.FindByEmailAsync(userRoleUpdateReqDTO.Username);
+
+            if (isUserExists == null)
+            {
+                response.Message = "User Not Found!";
+                response.isSucceed = false;
+                return response;
+            }
+
+            var isRoleUpdated = await _userManager.AddToRoleAsync(isUserExists!, UserRoles.OWNER);
+
+            if (isRoleUpdated.Succeeded)
+            {
+                response.Message = "User has now OWNER access";
+                response.isSucceed = true;
+                return response;
+            }
+
+            response.Message = "Something went wrong, User role updating fialed!";
+            response.isSucceed = false;
+            return response;
         }
 
 

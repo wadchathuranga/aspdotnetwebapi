@@ -183,7 +183,7 @@ namespace authentication.Controllers
         }
 
 
-        // Seeds user roles into db
+        // User roles seeds into db
         [HttpGet("seed-roles")]
         public async Task<IActionResult> SeedUserRoles()
         {
@@ -211,25 +211,11 @@ namespace authentication.Controllers
         [HttpPost("make-owner")]
         public async Task<IActionResult> MakeOwner([FromBody] UserRoleUpdateReqDTO userRoleUpdateReqDTO)
         {
-            var user = await _userManager.FindByEmailAsync(userRoleUpdateReqDTO.Username);
+            var operationResult = await _authManageService.MakeOwnerAsync(userRoleUpdateReqDTO);
 
-            if (user == null) return NotFound("User Not Found!");
+            if (operationResult.isSucceed) return BadRequest(operationResult); 
 
-
-            var isRoleUpdated = await _userManager.AddToRoleAsync(user!, UserRoles.OWNER);
-
-            if (isRoleUpdated.Succeeded)
-            {
-                var response = new UserRoleUpdateRes()
-                {
-                    Result = true,
-                    Message = "User has now OWNER access.",
-                };
-
-                return Ok(response);
-            }
-
-            return BadRequest("Something went wrong, User role updating fialed!");
+            return Ok(operationResult);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace authentication.Services.Interfaces
 
         Task<CommonResponseHandler> MakeAdminAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO);
 
-        Task MakeOwnerAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO);
+        Task<CommonResponseHandler> MakeOwnerAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO);
 
     }
 }
