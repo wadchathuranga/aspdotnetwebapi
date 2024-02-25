@@ -1,7 +1,7 @@
-﻿namespace authentication.Configurations
-{
-    public class JwtConfig
-    {
-        public string Secret { get; set; } = string.Empty;
-    }
-}
+﻿//namespace authentication.Configurations
+//{
+//    public class JwtConfig
+//    {
+//        public string Secret { get; set; } = string.Empty;
+//    }
+//}
