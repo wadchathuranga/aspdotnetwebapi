@@ -196,14 +196,11 @@ namespace authentication.Controllers
         [HttpPost("make-admin")]
         public async Task<IActionResult> MakeAdmin([FromBody] UserRoleUpdateReqDTO userRoleUpdateReqDTO)
         {
-            var operationResult = await _authService.MakeAdminAsync(updatePermissionDto);
+            var response = await _authManageService.MakeAdminAsync(userRoleUpdateReqDTO);
 
-            if (operationResult.IsSucceed)
-                return Ok(operationResult);
+            if (response.isSucceed) return Ok(response);
 
-            return BadRequest(operationResult);
-
-            
+            return BadRequest(response);
         }
 
 
