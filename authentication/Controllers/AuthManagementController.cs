@@ -2,6 +2,7 @@
 using authentication.DTOs.Response;
 using authentication.Models;
 using authentication.Services.Interfaces;
+using Azure;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -186,9 +187,11 @@ namespace authentication.Controllers
         [HttpGet("seed-roles")]
         public async Task<IActionResult> SeedUserRoles()
         {
-            var seerRoles = await _authManageService.SeedRolesAsync();
+            var response = await _authManageService.SeedRolesAsync();
 
-            return Ok(seerRoles);
+            if (!response.isSucceed) return BadRequest(response); 
+
+            return Ok(response);
         }
 
 
@@ -198,9 +201,9 @@ namespace authentication.Controllers
         {
             var response = await _authManageService.MakeAdminAsync(userRoleUpdateReqDTO);
 
-            if (response.isSucceed) return Ok(response);
+            if (!response.isSucceed) return BadRequest(response); 
 
-            return BadRequest(response);
+            return Ok(response);
         }
 
 
