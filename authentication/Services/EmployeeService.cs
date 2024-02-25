@@ -1,6 +1,7 @@
 ﻿using authentication.DbConnections;
 using authentication.DTOs;
 using authentication.Models;
+using authentication.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

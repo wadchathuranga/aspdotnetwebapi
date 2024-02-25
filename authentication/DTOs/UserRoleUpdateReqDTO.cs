@@ -5,6 +5,6 @@ namespace authentication.DTOs
     public class UserRoleUpdateReqDTO
     {
         [Required(ErrorMessage = "Username is required")]
-        public string Username { get; set; }
+        public required string Username { get; set; }
     }
 }

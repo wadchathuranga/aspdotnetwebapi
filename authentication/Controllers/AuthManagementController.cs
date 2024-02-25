@@ -1,6 +1,7 @@
 ﻿using authentication.DTOs;
 using authentication.DTOs.Response;
 using authentication.Models;
+using authentication.Services.Interfaces;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,18 +16,18 @@ namespace authentication.Controllers
     [ApiController]
     public class AuthManagementController : ControllerBase
     {
-        private readonly ILogger<WeatherForecastController> _logger;
         private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
+        private readonly IAuthManageService _authManageService;
 
         public AuthManagementController(
-            ILogger<WeatherForecastController> logger, 
             IConfiguration configuration,
+            IAuthManageService authManageService,
             UserManager<AppUser> userManager, 
             RoleManager<IdentityRole> roleManager)
         {
-            _logger = logger;
+            _authManageService = authManageService;
             _configuration = configuration;
             _userManager = userManager;
             _roleManager = roleManager;
@@ -185,17 +186,9 @@ namespace authentication.Controllers
         [HttpGet("seed-roles")]
         public async Task<IActionResult> SeedUserRoles()
         {
-            var isOwnerRoleExists = await _roleManager.RoleExistsAsync(UserRoles.OWNER);
-            var isAdminRoleExists = await _roleManager.RoleExistsAsync(UserRoles.ADMIN);
-            var isUserRoleExists = await _roleManager.RoleExistsAsync(UserRoles.USER);
+            var seerRoles = await _authManageService.SeedRolesAsync();
 
-            if (isOwnerRoleExists && isAdminRoleExists && isUserRoleExists) return Ok("Roles Seeding Already Done."); 
-
-            await _roleManager.CreateAsync(new IdentityRole(UserRoles.OWNER));
-            await _roleManager.CreateAsync(new IdentityRole(UserRoles.ADMIN));
-            await _roleManager.CreateAsync(new IdentityRole(UserRoles.USER));
-
-            return Ok("User Roles Seeding Done Successfully");
+            return Ok(seerRoles);
         }
 
 

@@ -1,7 +1,7 @@
 ﻿using authentication.DTOs;
 using authentication.Models;
 
-namespace authentication.Services
+namespace authentication.Services.Interfaces
 {
     public interface IEmployeeService
     {

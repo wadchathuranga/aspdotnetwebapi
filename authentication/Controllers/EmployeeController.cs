@@ -1,6 +1,6 @@
 ﻿using authentication.DTOs;
 using authentication.Models;
-using authentication.Services;
+using authentication.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
