@@ -36,51 +36,13 @@ namespace authentication.Controllers
 
         // USER REGISTER
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] UserRegistrationReqDTO requestDto)
+        public async Task<IActionResult> Register([FromBody] UserRegistrationReqDTO userRegistrationReqDTO)
         {
-            if (ModelState.IsValid) 
-            {
-                // check email exists
-                var emailExists = await _userManager.FindByEmailAsync(requestDto.Email);
+            var response = await _authManageService.RegisterAsync(userRegistrationReqDTO);
 
-                // check user exists
-                if (emailExists != null) return BadRequest("Email Already Exists!");
+            if (response.isSucceed) return BadRequest(response); 
 
-                // set user info
-                var newUser = new AppUser() 
-                { 
-                    FirstName = requestDto.FirstName,
-                    LastName = requestDto.LastName,
-                    UserName = requestDto.Username,
-                    Email = requestDto.Email,
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                };
-
-                // create user into db
-                var isCreated = await _userManager.CreateAsync(newUser, requestDto.Password);
-
-                if (isCreated.Succeeded) 
-                {
-                    // add default user role as USER
-                    await _userManager.AddToRoleAsync(newUser, UserRoles.USER);
-
-                    // generate jwt token
-                    string token = await GenerateNewJsonWebTokenAsync(newUser);
-
-                    // set response to return
-                    var response = new RegisterRes()
-                    {
-                        Result = true,
-                        Token = token,
-                    };
-
-                    return Ok(response);
-                }
-
-                return BadRequest(isCreated.Errors.Select(e=>e.Description).ToList());
-            }
-
-            return BadRequest("Invalid Request Payload!");
+            return Ok(response);
         }
 
 
@@ -88,36 +50,11 @@ namespace authentication.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginReqDTO loginReqDTO)
         {
-            if (ModelState.IsValid)
-            {
-                // find the user is existing or not
-                var existingUser = await _userManager.FindByEmailAsync(loginReqDTO.Email);
-                if (existingUser == null) return BadRequest("Invalid Credentials!");
+            var loginResult = await _authManageService.LoginAsync(loginReqDTO);
 
-                // check password is valid or not
-                var isPasswordValid = await _userManager.CheckPasswordAsync(existingUser, loginReqDTO.Password);
-                if (isPasswordValid)
-                {
-                    // get user roles move to the "GenerateNewJsonWebTokenAsync"
-                    //var userRoles = await _userManager.GetRolesAsync(existingUser);
+            if (loginResult.isSucceed) return Unauthorized(loginResult); 
 
-                    // generate jwt token
-                    string token = await GenerateNewJsonWebTokenAsync(existingUser);
-
-                    // set response to return
-                    var response = new LoginRes()
-                    {
-                        Result = true,
-                        Token = token,
-                    };
-
-                    return Ok(response);
-                }
-
-                return BadRequest("Invalid Credentials!");
-            }
-
-            return BadRequest("Invalid Request Payload!");
+            return Ok(loginResult);
         }
 
 
@@ -147,40 +84,40 @@ namespace authentication.Controllers
 
 
         // Generate new jwt web token
-        private async Task<string> GenerateNewJsonWebTokenAsync(AppUser existingUser)
-        {
-            var tokenSecret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Secret"]!));
+        //private async Task<string> GenerateNewJsonWebTokenAsync(AppUser existingUser)
+        //{
+        //    var tokenSecret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Secret"]!));
 
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
+        //    var jwtTokenHandler = new JwtSecurityTokenHandler();
             
-            var authClaims = new List<Claim>
-                    {
-                        new Claim("id", existingUser.Id),
-                        new Claim(JwtRegisteredClaimNames.Name, existingUser.UserName!),
-                        new Claim(JwtRegisteredClaimNames.Email, existingUser.Email!),
-                        new Claim(JwtRegisteredClaimNames.Sub, existingUser.Email!),
-                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    };
+        //    var authClaims = new List<Claim>
+        //            {
+        //                new Claim("id", existingUser.Id),
+        //                new Claim(JwtRegisteredClaimNames.Name, existingUser.UserName!),
+        //                new Claim(JwtRegisteredClaimNames.Email, existingUser.Email!),
+        //                new Claim(JwtRegisteredClaimNames.Sub, existingUser.Email!),
+        //                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        //            };
 
-            var userRoles = await _userManager.GetRolesAsync(existingUser);
+        //    var userRoles = await _userManager.GetRolesAsync(existingUser);
 
-            foreach (var userRole in userRoles)
-            {
-                authClaims.Add(new Claim("roles", userRole));
-            }
+        //    foreach (var userRole in userRoles)
+        //    {
+        //        authClaims.Add(new Claim("roles", userRole));
+        //    }
 
-            var tokenDescriptor = new SecurityTokenDescriptor()
-            {
-                Subject = new ClaimsIdentity(authClaims),
-                Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(tokenSecret, SecurityAlgorithms.HmacSha512)
-            };
+        //    var tokenDescriptor = new SecurityTokenDescriptor()
+        //    {
+        //        Subject = new ClaimsIdentity(authClaims),
+        //        Expires = DateTime.UtcNow.AddHours(1),
+        //        SigningCredentials = new SigningCredentials(tokenSecret, SecurityAlgorithms.HmacSha512)
+        //    };
 
-            var token = jwtTokenHandler.CreateToken(tokenDescriptor);
-            var jwtWebToken = jwtTokenHandler.WriteToken(token);
+        //    var token = jwtTokenHandler.CreateToken(tokenDescriptor);
+        //    var jwtWebToken = jwtTokenHandler.WriteToken(token);
 
-            return jwtWebToken;
-        }
+        //    return jwtWebToken;
+        //}
 
 
         // User roles seeds into db

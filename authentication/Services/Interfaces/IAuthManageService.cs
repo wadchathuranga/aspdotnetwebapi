@@ -7,9 +7,9 @@ namespace authentication.Services.Interfaces
     {
         Task<CommonResponseHandler> SeedRolesAsync();
 
-        Task RegisterAsync(UserRegistrationReqDTO userRegistrationReqDTO);
+        Task<RegisterRes> RegisterAsync(UserRegistrationReqDTO userRegistrationReqDTO);
 
-        Task LoginAsync(UserLoginReqDTO userLoginReqDTO);
+        Task<LoginRes> LoginAsync(UserLoginReqDTO userLoginReqDTO);
 
         Task<CommonResponseHandler> MakeAdminAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO);
 

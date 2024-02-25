@@ -5,6 +5,7 @@ namespace authentication.DTOs
     public class UserRoleUpdateReqDTO
     {
         [Required(ErrorMessage = "Username is required")]
-        public required string Username { get; set; }
+        [EmailAddress(ErrorMessage = "Invalid email address format")]
+        public required string Email { get; set; }
     }
 }

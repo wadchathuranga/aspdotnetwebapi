@@ -2,10 +2,10 @@
 {
     public class AuthResDTO
     {
-        public string? Token { get; set; } = string.Empty;
+        public string? Token { get; set; }
 
-        public bool Result { get; set; }
+        public bool isSucceed { get; set; }
 
-        public List<string>? Errors { get; set; }
+        public string? Error { get; set; }
     }
 }
