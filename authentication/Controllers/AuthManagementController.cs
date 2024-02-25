@@ -1,15 +1,8 @@
 ﻿using authentication.DTOs;
-using authentication.DTOs.Response;
 using authentication.Models;
 using authentication.Services.Interfaces;
-using Azure;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace authentication.Controllers
 {
@@ -17,21 +10,11 @@ namespace authentication.Controllers
     [ApiController]
     public class AuthManagementController : ControllerBase
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
-        private readonly IConfiguration _configuration;
         private readonly IAuthManageService _authManageService;
 
-        public AuthManagementController(
-            IConfiguration configuration,
-            IAuthManageService authManageService,
-            UserManager<AppUser> userManager, 
-            RoleManager<IdentityRole> roleManager)
+        public AuthManagementController(IAuthManageService authManageService)
         {
             _authManageService = authManageService;
-            _configuration = configuration;
-            _userManager = userManager;
-            _roleManager = roleManager;
         }
 
         // USER REGISTER
