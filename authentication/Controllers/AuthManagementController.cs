@@ -1,6 +1,7 @@
 ﻿using authentication.DTOs;
 using authentication.DTOs.Response;
 using authentication.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -193,6 +194,58 @@ namespace authentication.Controllers
             await _roleManager.CreateAsync(new IdentityRole(UserRoles.USER));
 
             return Ok("User Roles Seeding Done Successfully");
+        }
+
+
+        // Make User as ADMIN
+        [HttpPost("make-admin")]
+        public async Task<IActionResult> MakeAdmin([FromBody] UserRoleUpdateReqDTO userRoleUpdateReqDTO)
+        {
+            var user = await _userManager.FindByEmailAsync(userRoleUpdateReqDTO.Username);
+
+            if (user == null) return NotFound("User Not Found!");
+
+
+            var isRoleUpdated = await _userManager.AddToRoleAsync(user!, UserRoles.ADMIN);
+
+            if (isRoleUpdated.Succeeded) 
+            {
+                var response = new UserRoleUpdateRes()
+                {
+                    Result = true,
+                    Message = "User has now ADMIN access.",
+                };
+
+                return Ok(response);
+            }
+
+            return BadRequest("Something went wrong, User role updating fialed!");
+        }
+
+
+        // Make User as OWNER
+        [HttpPost("make-owner")]
+        public async Task<IActionResult> MakeOwner([FromBody] UserRoleUpdateReqDTO userRoleUpdateReqDTO)
+        {
+            var user = await _userManager.FindByEmailAsync(userRoleUpdateReqDTO.Username);
+
+            if (user == null) return NotFound("User Not Found!");
+
+
+            var isRoleUpdated = await _userManager.AddToRoleAsync(user!, UserRoles.OWNER);
+
+            if (isRoleUpdated.Succeeded)
+            {
+                var response = new UserRoleUpdateRes()
+                {
+                    Result = true,
+                    Message = "User has now OWNER access.",
+                };
+
+                return Ok(response);
+            }
+
+            return BadRequest("Something went wrong, User role updating fialed!");
         }
     }
 }
