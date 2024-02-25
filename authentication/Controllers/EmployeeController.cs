@@ -1,7 +1,6 @@
 ﻿using authentication.DTOs;
 using authentication.Models;
 using authentication.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +18,7 @@ namespace authentication.Controllers
         }
 
         [HttpPost("create")]
+        [Authorize(Roles = $"{UserRoles.OWNER}, {UserRoles.ADMIN}")]
         public async Task<ActionResult<List<Employee?>>> Register(EmployeeCreateDTO employeeCreateDTO)
         {
             var response = await _employeeService.CreateEmployee(employeeCreateDTO);
@@ -26,6 +26,7 @@ namespace authentication.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = $"{UserRoles.OWNER}, {UserRoles.ADMIN}, {UserRoles.USER}")]
         public async Task<ActionResult<Employee?>> GetAllEmployees()
         {
             var response = await _employeeService.GetAllEmployees();
@@ -33,6 +34,7 @@ namespace authentication.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = $"{UserRoles.OWNER}, {UserRoles.ADMIN}, {UserRoles.USER}")]
         public async Task<ActionResult<Employee?>> GetSingleEmployeeById(int id)
         {
             var response = await _employeeService.GetSingleEmployeeById(id);
@@ -41,6 +43,7 @@ namespace authentication.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = $"{UserRoles.OWNER}, {UserRoles.ADMIN}")]
         public async Task<ActionResult<Employee?>> UpdateEmployee(int id, EmployeeUpdateDTO employeeUpdateDTO)
         {
             var response = await _employeeService.UpdateEmployee(id, employeeUpdateDTO);
@@ -48,6 +51,7 @@ namespace authentication.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = $"{UserRoles.OWNER}")]
         public async Task<ActionResult<Employee?>> DeleteEmployeeById(int id)
         {
             var response = await _employeeService.DeleteEmployeeById(id);

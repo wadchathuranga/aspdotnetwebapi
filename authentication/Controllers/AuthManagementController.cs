@@ -1,11 +1,8 @@
-﻿using authentication.Configurations;
-using authentication.DTOs;
+﻿using authentication.DTOs;
 using authentication.DTOs.Response;
 using authentication.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
