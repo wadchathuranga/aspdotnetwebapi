@@ -58,68 +58,6 @@ namespace authentication.Controllers
         }
 
 
-        // Generate jwt token
-        //private string GenerateJwtToken(IdentityUser user)
-        //{
-        //    var key = Encoding.ASCII.GetBytes(_configuration["JwtConfig:Secret"]!);
-
-        //    var jwtTokenHandler = new JwtSecurityTokenHandler();
-
-        //    var tokenDescriptor = new SecurityTokenDescriptor()
-        //    {
-        //        Subject = new ClaimsIdentity(new Claim[] 
-        //        {
-        //            new Claim("Id", user.Id),
-        //            new Claim(JwtRegisteredClaimNames.Sub, user.Email!),
-        //            new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-        //            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        //        }),
-        //        Expires = DateTime.UtcNow.AddHours(1),
-        //        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512)
-        //    };
-        //    var token = jwtTokenHandler.CreateToken(tokenDescriptor);
-        //    var jwtToken = jwtTokenHandler.WriteToken(token);
-        //    return jwtToken;
-        //}
-
-
-        // Generate new jwt web token
-        //private async Task<string> GenerateNewJsonWebTokenAsync(AppUser existingUser)
-        //{
-        //    var tokenSecret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Secret"]!));
-
-        //    var jwtTokenHandler = new JwtSecurityTokenHandler();
-            
-        //    var authClaims = new List<Claim>
-        //            {
-        //                new Claim("id", existingUser.Id),
-        //                new Claim(JwtRegisteredClaimNames.Name, existingUser.UserName!),
-        //                new Claim(JwtRegisteredClaimNames.Email, existingUser.Email!),
-        //                new Claim(JwtRegisteredClaimNames.Sub, existingUser.Email!),
-        //                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        //            };
-
-        //    var userRoles = await _userManager.GetRolesAsync(existingUser);
-
-        //    foreach (var userRole in userRoles)
-        //    {
-        //        authClaims.Add(new Claim("roles", userRole));
-        //    }
-
-        //    var tokenDescriptor = new SecurityTokenDescriptor()
-        //    {
-        //        Subject = new ClaimsIdentity(authClaims),
-        //        Expires = DateTime.UtcNow.AddHours(1),
-        //        SigningCredentials = new SigningCredentials(tokenSecret, SecurityAlgorithms.HmacSha512)
-        //    };
-
-        //    var token = jwtTokenHandler.CreateToken(tokenDescriptor);
-        //    var jwtWebToken = jwtTokenHandler.WriteToken(token);
-
-        //    return jwtWebToken;
-        //}
-
-
         // User roles seeds into db
         [HttpGet("seed-roles")]
         public async Task<IActionResult> SeedUserRoles()

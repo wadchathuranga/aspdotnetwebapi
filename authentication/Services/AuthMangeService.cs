@@ -232,7 +232,7 @@ namespace authentication.Services
         }
 
         // Generate jwt token
-        //private string GenerateJwtToken(IdentityUser user)
+        //private string GenerateJwtToken(AppUser user)
         //{
         //    var key = Encoding.ASCII.GetBytes(_configuration["JwtConfig:Secret"]!);
 
