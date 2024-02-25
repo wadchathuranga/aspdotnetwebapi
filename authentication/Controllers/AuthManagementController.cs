@@ -2,9 +2,9 @@
 using authentication.DTOs;
 using authentication.DTOs.Response;
 using authentication.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -19,18 +19,25 @@ namespace authentication.Controllers
     {
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly JwtConfig _jwtConfig;
+        private readonly IConfiguration _configuration;
 
         public AuthManagementController(
             ILogger<WeatherForecastController> logger, 
+            IConfiguration configuration,
             UserManager<IdentityUser> userManager, 
+            RoleManager<IdentityRole> roleManager,
             IOptionsMonitor<JwtConfig> _optionMonitor)
         {
             _logger = logger;
+            _configuration = configuration;
             _userManager = userManager;
+            _roleManager = roleManager;
             _jwtConfig = _optionMonitor.CurrentValue;
         }
 
+        // USER REGISTER
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserRegistrationReqDTO requestDto)
         {
@@ -46,7 +53,8 @@ namespace authentication.Controllers
                 var newUser = new IdentityUser 
                 { 
                     UserName = requestDto.Username,
-                    Email = requestDto.Email 
+                    Email = requestDto.Email,
+                    SecurityStamp = Guid.NewGuid().ToString(),
                 };
 
                 // create user into db
@@ -54,8 +62,11 @@ namespace authentication.Controllers
 
                 if (isCreated.Succeeded) 
                 {
+                    // add default user role as USER
+                    await _userManager.AddToRoleAsync(newUser, UserRoles.USER);
+
                     // generate jwt token
-                    var token = GenerateJwtToken(newUser);
+                    string token = await GenerateNewJsonWebTokenAsync(newUser);
 
                     // set response to return
                     var response = new RegisterRes()
@@ -73,6 +84,8 @@ namespace authentication.Controllers
             return BadRequest("Invalid Request Payload!");
         }
 
+
+        // USER LOGIN
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginReqDTO loginReqDTO)
         {
@@ -86,8 +99,11 @@ namespace authentication.Controllers
                 var isPasswordValid = await _userManager.CheckPasswordAsync(existingUser, loginReqDTO.Password);
                 if (isPasswordValid)
                 {
+                    // get user roles move to the "GenerateNewJsonWebTokenAsync"
+                    //var userRoles = await _userManager.GetRolesAsync(existingUser);
+
                     // generate jwt token
-                    var token = GenerateJwtToken(existingUser);
+                    string token = await GenerateNewJsonWebTokenAsync(existingUser);
 
                     // set response to return
                     var response = new LoginRes()
@@ -105,28 +121,84 @@ namespace authentication.Controllers
             return BadRequest("Invalid Request Payload!");
         }
 
-        // Generate access token
-        private string GenerateJwtToken(IdentityUser user)
+
+        // Generate jwt token
+        //private string GenerateJwtToken(IdentityUser user)
+        //{
+        //    var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
+
+        //    var jwtTokenHandler = new JwtSecurityTokenHandler();
+
+        //    var tokenDescriptor = new SecurityTokenDescriptor()
+        //    {
+        //        Subject = new ClaimsIdentity(new Claim[] 
+        //        {
+        //            new Claim("Id", user.Id),
+        //            new Claim(JwtRegisteredClaimNames.Sub, user.Email!),
+        //            new Claim(JwtRegisteredClaimNames.Email, user.Email!),
+        //            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        //        }),
+        //        Expires = DateTime.UtcNow.AddHours(1),
+        //        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512)
+        //    };
+        //    var token = jwtTokenHandler.CreateToken(tokenDescriptor);
+        //    var jwtToken = jwtTokenHandler.WriteToken(token);
+        //    return jwtToken;
+        //}
+
+
+        // Generate new jwt web token
+        private async Task<string> GenerateNewJsonWebTokenAsync(IdentityUser existingUser)
         {
-            var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
+            var tokenSecret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Secret"]!));
 
             var jwtTokenHandler = new JwtSecurityTokenHandler();
+            
+            var authClaims = new List<Claim>
+                    {
+                        new Claim("id", existingUser.Id),
+                        new Claim(JwtRegisteredClaimNames.Name, existingUser.UserName!),
+                        new Claim(JwtRegisteredClaimNames.Email, existingUser.Email!),
+                        new Claim(JwtRegisteredClaimNames.Sub, existingUser.Email!),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    };
+
+            var userRoles = await _userManager.GetRolesAsync(existingUser);
+
+            foreach (var userRole in userRoles)
+            {
+                authClaims.Add(new Claim("roles", userRole));
+            }
 
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
-                Subject = new ClaimsIdentity(new Claim[] 
-                {
-                    new Claim("Id", user.Id),
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Email!),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email!),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                }),
+                Subject = new ClaimsIdentity(authClaims),
                 Expires = DateTime.UtcNow.AddHours(1),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha512)
+                SigningCredentials = new SigningCredentials(tokenSecret, SecurityAlgorithms.HmacSha512)
             };
+
             var token = jwtTokenHandler.CreateToken(tokenDescriptor);
-            var jwtToken = jwtTokenHandler.WriteToken(token);
-            return jwtToken;
+            var jwtWebToken = jwtTokenHandler.WriteToken(token);
+
+            return jwtWebToken;
+        }
+
+
+        // Seeds user roles into db
+        [HttpGet("seed-roles")]
+        public async Task<IActionResult> SeedUserRoles()
+        {
+            var isOwnerRoleExists = await _roleManager.RoleExistsAsync(UserRoles.OWNER);
+            var isAdminRoleExists = await _roleManager.RoleExistsAsync(UserRoles.ADMIN);
+            var isUserRoleExists = await _roleManager.RoleExistsAsync(UserRoles.USER);
+
+            if (isOwnerRoleExists && isAdminRoleExists && isUserRoleExists) return Ok("Roles Seeding Already Done."); 
+
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.OWNER));
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.ADMIN));
+            await _roleManager.CreateAsync(new IdentityRole(UserRoles.USER));
+
+            return Ok("User Roles Seeding Done Successfully");
         }
     }
 }
