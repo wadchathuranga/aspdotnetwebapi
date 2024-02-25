@@ -1,4 +1,5 @@
 using authentication.DbConnections;
+using authentication.Models;
 using authentication.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -45,7 +46,7 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 // --------------- Add identity ---------------
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 

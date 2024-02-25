@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace authentication.DbConnections
 {
-    public class AppDbContext : IdentityDbContext
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
         private readonly IConfiguration _config;
 

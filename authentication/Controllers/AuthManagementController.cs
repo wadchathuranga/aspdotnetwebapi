@@ -16,14 +16,14 @@ namespace authentication.Controllers
     public class AuthManagementController : ControllerBase
     {
         private readonly ILogger<WeatherForecastController> _logger;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
 
         public AuthManagementController(
             ILogger<WeatherForecastController> logger, 
             IConfiguration configuration,
-            UserManager<IdentityUser> userManager, 
+            UserManager<AppUser> userManager, 
             RoleManager<IdentityRole> roleManager)
         {
             _logger = logger;
@@ -45,8 +45,10 @@ namespace authentication.Controllers
                 if (emailExists != null) return BadRequest("Email Already Exists!");
 
                 // set user info
-                var newUser = new IdentityUser 
+                var newUser = new AppUser() 
                 { 
+                    FirstName = requestDto.FirstName,
+                    LastName = requestDto.LastName,
                     UserName = requestDto.Username,
                     Email = requestDto.Email,
                     SecurityStamp = Guid.NewGuid().ToString(),
@@ -143,7 +145,7 @@ namespace authentication.Controllers
 
 
         // Generate new jwt web token
-        private async Task<string> GenerateNewJsonWebTokenAsync(IdentityUser existingUser)
+        private async Task<string> GenerateNewJsonWebTokenAsync(AppUser existingUser)
         {
             var tokenSecret = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtConfig:Secret"]!));
 
