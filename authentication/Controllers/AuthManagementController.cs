@@ -40,7 +40,7 @@ namespace authentication.Controllers
         {
             var response = await _authManageService.RegisterAsync(userRegistrationReqDTO);
 
-            if (response.isSucceed) return BadRequest(response); 
+            if (!response.isSucceed) return BadRequest(response); 
 
             return Ok(response);
         }
@@ -52,7 +52,7 @@ namespace authentication.Controllers
         {
             var loginResult = await _authManageService.LoginAsync(loginReqDTO);
 
-            if (loginResult.isSucceed) return Unauthorized(loginResult); 
+            if (!loginResult.isSucceed) return Unauthorized(loginResult); 
 
             return Ok(loginResult);
         }
@@ -88,7 +88,7 @@ namespace authentication.Controllers
         {
             var operationResult = await _authManageService.MakeOwnerAsync(userRoleUpdateReqDTO);
 
-            if (operationResult.isSucceed) return BadRequest(operationResult); 
+            if (!operationResult.isSucceed) return BadRequest(operationResult); 
 
             return Ok(operationResult);
         }

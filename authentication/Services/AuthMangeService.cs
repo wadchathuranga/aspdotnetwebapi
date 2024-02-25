@@ -189,7 +189,7 @@ namespace authentication.Services
             await _roleManager.CreateAsync(new IdentityRole(UserRoles.ADMIN));
             await _roleManager.CreateAsync(new IdentityRole(UserRoles.USER));
 
-            response.Message = "Roles Seeding Already Done.";
+            response.Message = "Roles Seeding Successfull.";
             response.isSucceed = true;
             return response;
         }
