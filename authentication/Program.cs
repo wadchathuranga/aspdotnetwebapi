@@ -49,9 +49,20 @@ builder.Services.AddSwaggerGen(option =>
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 
 // --------------- Add identity ---------------
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
-    options.SignIn.RequireConfirmedAccount = true)
-    .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+// --------------- Config Identity ---------------
+//builder.Services.Configure<IdentityOptions>(options =>
+//{
+//    options.Password.RequiredLength = 3;
+//    options.Password.RequireDigit = false;
+//    options.Password.RequireLowercase = false;
+//    options.Password.RequireUppercase = false;
+//    options.Password.RequireNonAlphanumeric = false;
+//    options.SignIn.RequireConfirmedEmail = false;
+//});
 
 // --------------- Add Athentication ---------------
 builder.Services.AddAuthentication(options =>
@@ -63,12 +74,15 @@ builder.Services.AddAuthentication(options =>
     .AddJwtBearer(jwt => {
         var key = Encoding.ASCII.GetBytes(builder.Configuration.GetSection("JwtConfig:Secret").Value!);
         jwt.SaveToken = true;
+        jwt.RequireHttpsMetadata = false;
         jwt.TokenValidationParameters = new TokenValidationParameters()
         {
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey(key),
             ValidateIssuer = false,
             ValidateAudience = false,
+            //ValidIssuer = builder.Configuration.GetSection("JwtConfig:ValidIssuer").Value!,
+            //ValidAudience = builder.Configuration.GetSection("JwtConfig:ValidAudience").Value!,
             RequireExpirationTime = false,
             ValidateLifetime = false,
         };
