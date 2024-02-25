@@ -23,26 +23,55 @@ namespace authentication.Services
             _roleManager = roleManager;
         }
 
-        public Task LoginAsync(UserLoginReqDTO userLoginReqDTO)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task MakeAdminAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task MakeOwnerAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO)
-        {
-            throw new NotImplementedException();
-        }
-
         public Task RegisterAsync(UserRegistrationReqDTO userRegistrationReqDTO)
         {
             throw new NotImplementedException();
         }
 
+        public Task LoginAsync(UserLoginReqDTO userLoginReqDTO)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        // ADMIN access is given to the User
+        public async Task<CommonResponseHandler> MakeAdminAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO)
+        {
+            var roleUpdateRes= new CommonResponseHandler();
+
+            var user = await _userManager.FindByEmailAsync(userRoleUpdateReqDTO.Username);
+
+            if (user == null) 
+            {
+                roleUpdateRes.Message = "User Not Found!";
+                roleUpdateRes.isSucceed = false;
+                return roleUpdateRes;
+            }
+
+            var isRoleUpdated = await _userManager.AddToRoleAsync(user!, UserRoles.ADMIN);
+
+            if (isRoleUpdated.Succeeded)
+            {
+                roleUpdateRes.Message = "User has now ADMIN access";
+                roleUpdateRes.isSucceed = true;
+                return roleUpdateRes;
+            }
+
+            roleUpdateRes.Message = "Something went wrong, User role updating fialed!";
+            roleUpdateRes.isSucceed = false;
+            return roleUpdateRes;
+        }
+
+
+        // OWNER access is given to the User
+        public Task MakeOwnerAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO)
+        {
+            throw new NotImplementedException();
+        }
+
+
+
+        // Roles seeds to db
         public async Task<CommonResponseHandler> SeedRolesAsync()
         {
             var response = new CommonResponseHandler();
@@ -54,7 +83,7 @@ namespace authentication.Services
             if (isOwnerRoleExists && isAdminRoleExists && isUserRoleExists)
             {
                 response.Message = "Roles Seeding Already Done.";
-                response.isSucceed = true;
+                response.isSucceed = false;
                 return response;
             }
 

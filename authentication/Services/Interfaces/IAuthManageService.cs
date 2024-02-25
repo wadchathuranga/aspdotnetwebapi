@@ -11,7 +11,7 @@ namespace authentication.Services.Interfaces
 
         Task LoginAsync(UserLoginReqDTO userLoginReqDTO);
 
-        Task MakeAdminAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO);
+        Task<CommonResponseHandler> MakeAdminAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO);
 
         Task MakeOwnerAsync(UserRoleUpdateReqDTO userRoleUpdateReqDTO);
 

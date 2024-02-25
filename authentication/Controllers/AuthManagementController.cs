@@ -196,25 +196,14 @@ namespace authentication.Controllers
         [HttpPost("make-admin")]
         public async Task<IActionResult> MakeAdmin([FromBody] UserRoleUpdateReqDTO userRoleUpdateReqDTO)
         {
-            var user = await _userManager.FindByEmailAsync(userRoleUpdateReqDTO.Username);
+            var operationResult = await _authService.MakeAdminAsync(updatePermissionDto);
 
-            if (user == null) return NotFound("User Not Found!");
+            if (operationResult.IsSucceed)
+                return Ok(operationResult);
 
+            return BadRequest(operationResult);
 
-            var isRoleUpdated = await _userManager.AddToRoleAsync(user!, UserRoles.ADMIN);
-
-            if (isRoleUpdated.Succeeded) 
-            {
-                var response = new UserRoleUpdateRes()
-                {
-                    Result = true,
-                    Message = "User has now ADMIN access.",
-                };
-
-                return Ok(response);
-            }
-
-            return BadRequest("Something went wrong, User role updating fialed!");
+            
         }
 
 
