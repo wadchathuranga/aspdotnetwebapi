@@ -17,13 +17,11 @@ namespace authentication.Controllers
         private readonly ILogger<WeatherForecastController> _logger;
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        //private readonly JwtConfig _jwtConfig;
         private readonly IConfiguration _configuration;
 
         public AuthManagementController(
             ILogger<WeatherForecastController> logger, 
             IConfiguration configuration,
-            //IOptionsMonitor<JwtConfig> _optionMonitor,
             UserManager<IdentityUser> userManager, 
             RoleManager<IdentityRole> roleManager)
         {
@@ -31,7 +29,6 @@ namespace authentication.Controllers
             _configuration = configuration;
             _userManager = userManager;
             _roleManager = roleManager;
-            //_jwtConfig = _optionMonitor.CurrentValue;
         }
 
         // USER REGISTER
@@ -122,7 +119,7 @@ namespace authentication.Controllers
         // Generate jwt token
         //private string GenerateJwtToken(IdentityUser user)
         //{
-        //    var key = Encoding.ASCII.GetBytes(_jwtConfig.Secret);
+        //    var key = Encoding.ASCII.GetBytes(_configuration["JwtConfig:Secret"]!);
 
         //    var jwtTokenHandler = new JwtSecurityTokenHandler();
 
