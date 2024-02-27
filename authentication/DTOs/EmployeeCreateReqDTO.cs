@@ -2,17 +2,17 @@
 
 namespace authentication.DTOs
 {
-    public class EmployeeCreateDTO
+    public class EmployeeCreateReqDTO
     {
         [Required]
-        public string EmpName { get; set; }
+        public string Name { get; set; }
         
         [Required]
         [EmailAddress]
         [DataType(DataType.EmailAddress)]
-        public string EmpEmail { get; set; }
+        public string Email { get; set; }
 
         [Required]
-        public string EmpAddress { get; set; }
+        public string Address { get; set; }
     }
 }

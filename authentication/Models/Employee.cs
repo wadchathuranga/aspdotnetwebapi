@@ -7,9 +7,9 @@ namespace authentication.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int id { get; set; } 
-        public string EmpEmail { get; set; }
-        public string EmpName { get; set; }
-        public string EmpAddress { get; set; }
+        public int Id { get; set; } 
+        public string Email { get; set; }
+        public string Name { get; set; }
+        public string Address { get; set; }
     }
 }

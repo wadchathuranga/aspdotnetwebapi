@@ -1,7 +1,9 @@
 ﻿using authentication.DbConnections;
 using authentication.DTOs;
+using authentication.DTOs.Response;
 using authentication.Models;
 using authentication.Services.Interfaces;
+using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -22,20 +24,20 @@ namespace authentication.Services
         }
 
         // Create user
-        public async Task<List<Employee>> CreateEmployee(EmployeeCreateDTO employeeCreateDTO)
+        public async Task<Employee?> CreateEmployee(EmployeeCreateReqDTO employeeCreateDTO)
         {
             
             var user = new Employee()
             {
-                EmpName = employeeCreateDTO.EmpName,
-                EmpEmail = employeeCreateDTO.EmpEmail,
-                EmpAddress = employeeCreateDTO.EmpAddress,
+                Name = employeeCreateDTO.Name,
+                Email = employeeCreateDTO.Email,
+                Address = employeeCreateDTO.Address,
             };
 
             _db.Employees.Add(user);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
-            return await _db.Employees.ToListAsync();
+            return user;
         }
 
         // Get single user by Id
@@ -49,18 +51,20 @@ namespace authentication.Services
         }
 
         // Update user by Id
-        public async Task<List<Employee>?> UpdateEmployee(int id, EmployeeUpdateDTO employeeUpdateDTO)
+        public async Task<Employee?> UpdateEmployee(int id, EmployeeUpdateReqDTO employeeUpdateDTO)
         {
+            var response = new EmployeeRes();
+
             var existingUser = await _db.Employees.FindAsync(id);
-            if (existingUser is null)
-                return null;
+            if (existingUser == null) return null;
+            
 
-            existingUser.EmpName = employeeUpdateDTO.EmpName == string.Empty ? existingUser.EmpName : employeeUpdateDTO.EmpName;
-            existingUser.EmpEmail = employeeUpdateDTO.EmpEmail == string.Empty ? existingUser.EmpEmail : employeeUpdateDTO.EmpEmail;
+            existingUser.Name = employeeUpdateDTO.Name == null ? existingUser.Name : employeeUpdateDTO.Name;
+            existingUser.Address = employeeUpdateDTO.Address == null ? existingUser.Address : employeeUpdateDTO.Address;
 
-            await _db.SaveChangesAsync();
+            _db.SaveChanges();
 
-            return await _db.Employees.ToListAsync();
+            return existingUser;
         }
 
         // Delete user by Id
@@ -79,8 +83,8 @@ namespace authentication.Services
         // Get all Employees
         public async Task<List<Employee>?> GetAllEmployees()
         {
-            var Employees = await _db.Employees.ToListAsync();
-            return Employees;
+            var employees = await _db.Employees.ToListAsync();
+            return employees;
         }
 
         // User login

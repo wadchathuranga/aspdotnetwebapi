@@ -1,8 +1,10 @@
 ﻿using authentication.DTOs;
+using authentication.DTOs.Response;
 using authentication.Models;
 using authentication.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Any;
 
 namespace authentication.Controllers
 {
@@ -19,9 +21,14 @@ namespace authentication.Controllers
 
         [HttpPost("create")]
         [Authorize(Roles = $"{UserRoles.OWNER}, {UserRoles.ADMIN}")]
-        public async Task<ActionResult<List<Employee?>>> Register(EmployeeCreateDTO employeeCreateDTO)
+        public async Task<ActionResult<EmployeeRes?>> Create(EmployeeCreateReqDTO employeeCreateDTO)
         {
-            var response = await _employeeService.CreateEmployee(employeeCreateDTO);
+            var response = new EmployeeRes();
+
+            var result = await _employeeService.CreateEmployee(employeeCreateDTO);
+
+            response.Data = result;
+            response.isSucceed = true;
             return Ok(response);
         }
 
@@ -29,32 +36,60 @@ namespace authentication.Controllers
         [Authorize(Roles = $"{UserRoles.OWNER}, {UserRoles.ADMIN}, {UserRoles.USER}")]
         public async Task<ActionResult<Employee?>> GetAllEmployees()
         {
-            var response = await _employeeService.GetAllEmployees();
-            return Ok(response);
+            var result = await _employeeService.GetAllEmployees();
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         [Authorize(Roles = $"{UserRoles.OWNER}, {UserRoles.ADMIN}, {UserRoles.USER}")]
-        public async Task<ActionResult<Employee?>> GetSingleEmployeeById(int id)
+        public async Task<ActionResult<EmployeeRes>> GetSingleEmployeeById(int id)
         {
-            var response = await _employeeService.GetSingleEmployeeById(id);
-            if (response is null) return NotFound("User Not Found!");
+            var response = new EmployeeRes();
+
+            var result = await _employeeService.GetSingleEmployeeById(id);
+
+            if (result is null) 
+            {
+                response.Error = "Employee Not Found!";
+                response.isSucceed = false;
+                return NotFound(response); 
+            }
+
+            response.Data = result;
+            response.isSucceed = true;
             return Ok(response);
         }
 
         [HttpPut("{id}")]
         [Authorize(Roles = $"{UserRoles.OWNER}, {UserRoles.ADMIN}")]
-        public async Task<ActionResult<Employee?>> UpdateEmployee(int id, EmployeeUpdateDTO employeeUpdateDTO)
+        public async Task<ActionResult<EmployeeRes>> UpdateEmployee(int id, EmployeeUpdateReqDTO employeeUpdateDTO)
         {
-            var response = await _employeeService.UpdateEmployee(id, employeeUpdateDTO);
+            var response = new EmployeeRes();
+
+            var result = await _employeeService.UpdateEmployee(id, employeeUpdateDTO);
+
+            if (result == null)
+            {
+                response.Error = "Employee Not Found!";
+                response.isSucceed = false;
+                return NotFound(response);
+            }
+
+            response.Data = result;
+            response.isSucceed = true;
             return Ok(response);
         }
 
         [HttpDelete("{id}")]
         [Authorize(Roles = $"{UserRoles.OWNER}")]
-        public async Task<ActionResult<Employee?>> DeleteEmployeeById(int id)
+        public async Task<ActionResult<EmployeeRes?>> DeleteEmployeeById(int id)
         {
-            var response = await _employeeService.DeleteEmployeeById(id);
+            var response = new EmployeeRes();
+
+            var result = await _employeeService.DeleteEmployeeById(id);
+
+            response.Data = result;
+            response.isSucceed = true;
             return Ok(response);
         }
     }

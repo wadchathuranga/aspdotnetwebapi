@@ -1,13 +1,14 @@
 ﻿using authentication.DTOs;
+using authentication.DTOs.Response;
 using authentication.Models;
 
 namespace authentication.Services.Interfaces
 {
     public interface IEmployeeService
     {
-        Task<List<Employee>> CreateEmployee(EmployeeCreateDTO employeeCreateDTO);
+        Task<Employee?> CreateEmployee(EmployeeCreateReqDTO employeeCreateDTO);
 
-        Task<List<Employee>?> UpdateEmployee(int id, EmployeeUpdateDTO employeeUpdateDTO);
+        Task<Employee?> UpdateEmployee(int id, EmployeeUpdateReqDTO employeeUpdateDTO);
 
         Task<Employee?> GetSingleEmployeeById(int id);
 
