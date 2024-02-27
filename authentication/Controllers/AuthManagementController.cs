@@ -1,7 +1,5 @@
 ﻿using authentication.DTOs;
-using authentication.Models;
 using authentication.Services.Interfaces;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace authentication.Controllers
