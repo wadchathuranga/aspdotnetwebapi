@@ -4,7 +4,6 @@ using authentication.Models;
 using authentication.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Any;
 
 namespace authentication.Controllers
 {

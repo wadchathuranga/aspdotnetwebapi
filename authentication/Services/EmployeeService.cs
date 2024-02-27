@@ -3,24 +3,17 @@ using authentication.DTOs;
 using authentication.DTOs.Response;
 using authentication.Models;
 using authentication.Services.Interfaces;
-using Azure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace authentication.Services
 {
     public class EmployeeService : IEmployeeService
     {
         private readonly AppDbContext _db;
-        private readonly IConfiguration _config;
 
         public EmployeeService(AppDbContext db, IConfiguration configuration)
         {
             _db = db;
-            _config = configuration;
         }
 
         // Create user
